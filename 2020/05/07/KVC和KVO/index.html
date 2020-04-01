@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>KVC和KVO | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="KVC 获取对象（Accessing Object Properties）  KVC提供了一种更通用的机制使用标识符来访问对象的属性。 key必须使用ASCII编码，不能包含空格，通常以小写字母开头。 keyPath通过单个方法调用对深入到对象的层次结构非常有用。 swift中，使用#keyPath表达式，提供编译时检查。 &#x3D;&#x3D;transactions.payee的理解&#x3D;&#x3D;，if any but">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVC和KVO">
+<meta property="og:url" content="http://yoursite.com/2019/06/07/KVC%E5%92%8CKVO/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="KVC 获取对象（Accessing Object Properties）  KVC提供了一种更通用的机制使用标识符来访问对象的属性。 key必须使用ASCII编码，不能包含空格，通常以小写字母开头。 keyPath通过单个方法调用对深入到对象的层次结构非常有用。 swift中，使用#keyPath表达式，提供编译时检查。 &#x3D;&#x3D;transactions.payee的理解&#x3D;&#x3D;，if any but">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-06-07T03:09:32.000Z">
+<meta property="article:modified_time" content="2020-03-26T08:03:15.836Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-KVC和KVO" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/06/07/KVC%E5%92%8CKVO/" class="article-date">
+  <time datetime="2019-06-07T03:09:32.000Z" itemprop="datePublished">2019-06-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      KVC和KVO
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="KVC"><a href="#KVC" class="headerlink" title="KVC"></a>KVC</h1><ul>
+<li><p>获取对象（Accessing Object Properties）</p>
+<blockquote>
+<p>KVC提供了一种更通用的机制使用标识符来访问对象的属性。</p>
+<p>key必须使用ASCII编码，不能包含空格，通常以小写字母开头。</p>
+<p>keyPath通过单个方法调用对深入到对象的层次结构非常有用。</p>
+<p>swift中，使用#keyPath表达式，提供编译时检查。</p>
+<p>==transactions.payee的理解==，if any but the final key in the key path is a to-many relationship怎么翻译。</p>
+</blockquote>
+<ul>
+<li>Attributes</li>
+<li>To-one relationships</li>
+<li>To-many relationships</li>
+</ul>
+</li>
+<li><p>Accessing Collection Properties</p>
+<ul>
+<li>mutableArrayValueForKey:结合KVO</li>
+</ul>
+</li>
+<li><p>数组操作符（Using Collection Operators）</p>
+<ul>
+<li>Aggregation Operators<ul>
+<li>@avg，@count，@max，@min，@sum</li>
+</ul>
+</li>
+<li>Array Operators<ul>
+<li>@distinctUnionOfObjects</li>
+<li>@unionOfObjects</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Representing Non-Object Values</p>
+<blockquote>
+<p>==Because all properties in Swift are objects, this section only apples to Objective-C properties.==</p>
+</blockquote>
+<p>对于非对象值，会自动包装成对象。</p>
+</li>
+<li><p>Validating Properties</p>
+<blockquote>
+<p>==既返回对象又返回错误的那种情况，不了解==</p>
+</blockquote>
+</li>
+<li><p>Accessor Search Patterns</p>
+<ol>
+<li>get<Key>，<key>，is<Key>，_<key>，如果有值就去第五步。</li>
+<li>countOf<Key>，objectIn<Key>AtIndex:和<key>AtIndexes:。如果第一个方法和第二个方法中的一个找到，就创建一个集合，否则前往第三步。</li>
+<li>countOf<key>，enumeratorOf<Key>，memberOf<Key>:，创建一个集合类型，否则前往第四步。</li>
+<li>accessInstanceVariablesDirectly若返回为YES，寻找_<key>， _is<Key>，<key>，is<Key>。若为找到前往第六步</li>
+<li>返回找到的对象。</li>
+<li>valueForUndefinedKey:，抛出异常或重写实现。</li>
+</ol>
+<p>setter的搜索方式。</p>
+<ol>
+<li>set<Key>:，_set<Key>，若找到就结束。</li>
+<li>accessInstanceVariablesDirectly 返回为YES，寻找_<key>，_is<Key>，<key>，is<Key>，若有就结束。</li>
+<li>setValue:ForUndefinedKey:，抛出异常或重写实现。</li>
+</ol>
+<p>==数组的情况没有完全了解==</p>
+</li>
+</ul>
+<h1 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h1><ul>
+<li><p>Achieving Basic Key-Value Coding Compliance。==@dynamic 和 @synthesize，尤其是最后一段话==</p>
+</li>
+<li><p>Defining Collection Methods</p>
+</li>
+<li><p>==Describing Property Relationships 还存在吗==</p>
+</li>
+<li></li>
+</ul>
+<h3 id="KVC-1"><a href="#KVC-1" class="headerlink" title="KVC"></a>KVC</h3><p>键值编码，可以通过key来访问某个属性</p>
+<p><strong>搜索规则</strong></p>
+<p><code>accessInstanceVariablesDirectly</code></p>
+<ol>
+<li>通过<code>getter</code>方法搜索实例</li>
+</ol>
+<h2 id="KVO"><a href="#KVO" class="headerlink" title="KVO"></a>KVO</h2><p>全称Key-Value Observing，俗称键值监听，可以用于监听某个对象属性值的改变。</p>
+<h3 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h3><p>使用<code>KVO</code>分为三个步骤：</p>
+<ol>
+<li>通过<code>addObserver:forKeyPath:options:context:</code>方法注册观察者，观察者可以接收<code>keyPath</code>属性的变化事件。</li>
+<li>在观察者中实现<code>observeValueForKeyPath:ofObject:change:context:</code>方法，当<code>keyPath</code>属性发生改变后，<code>KVO</code>会回调这个方法来通知观察者。</li>
+<li>当观察者不需要监听时，可以调用<code>removeObserver:forKeyPath:</code>方法将<code>KVO</code>移除。需要注意的是，调用<code>removeObserver</code>需要在观察者消失之前，否则会导致<code>Crash</code>。</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Person *p1 &#x3D; [[Person alloc] init];</span><br><span class="line"></span><br><span class="line">NSKeyValueObservingOptions options &#x3D; NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;</span><br><span class="line">[p1 addObserver:self forKeyPath:@&quot;age&quot; options:options context:nil];</span><br><span class="line">p1.age &#x3D; 10;</span><br><span class="line">[p1 removeObserver:self forKeyPath:@&quot;age&quot;];</span><br><span class="line"></span><br><span class="line">- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary&lt;NSKeyValueChangeKey, id&gt; *)change context:(void *)context &#123;</span><br><span class="line">	NSLog(@&quot;监听到%@的%@改变了%@&quot;, object, keyPath,change);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="调用方法"><a href="#调用方法" class="headerlink" title="调用方法"></a>调用方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 直接调用set方法，或者通过属性的点语法间接调用</span><br><span class="line">[account setName:@&quot;Savings&quot;];</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 使用KVC的setValue:forKey:方法</span><br><span class="line">[account setValue:@&quot;Savings&quot; forKey:@&quot;name&quot;];</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; 使用KVC的setValue:forKeyPath:方法</span><br><span class="line">[document setValue:@&quot;Savings&quot; forKeyPath:@&quot;account.name&quot;];</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 通过mutableArrayValueForKey:方法获取到代理对象，并使用代理对象进行操作</span><br><span class="line">Transaction *newTransaction &#x3D; &lt;#Create a new transaction for the account#&gt;;</span><br><span class="line">NSMutableArray *transactions &#x3D; [account mutableArrayValueForKey:@&quot;transactions&quot;];</span><br><span class="line">[transactions addObject:newTransaction];</span><br></pre></td></tr></table></figure>
+
+<p>###底层实现：</p>
+<p>对象执行过addObserver操作之后，对象的isa指针由之前的指向类对象<code>XX</code>，变为指向<code>NSKVONotifying_XX</code>类对象。<code>NSKVONotifying_XX</code>是<code>XX</code>的子类。<code>NSKVONotifying_xx</code>重写了<code>setter</code>方法，在<code>setter</code>方法内调用<code>_NSset&lt;Type&gt;ValueAndNotify</code>，进一步调用<code>willChangeValueForKey</code>，调用父类的<code>setter</code>方法对成员变量赋值，最终调用<code>didChangeValueForKey</code>，进而调用<code>observeValueForKeyPath</code></p>
+<p><strong><code>NSKVONotifying_XX</code>的内部结构：</strong></p>
+<p><code>setXX:</code> <code>class</code> <code>dealloc</code> <code>_isKVOA</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">- (Class)class &#123;</span><br><span class="line">	return class_getSuperclass(object_getClass(self));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>###手动触发</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)automaticallyNotifiesObserversForKey:(NSString *)theKey &#123;</span><br><span class="line">	return NO;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>###自己具体实现KVO</p>
+<p>Isa-swizzling技术</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">NSString *setterStr &#x3D; private_setterForKey(key);</span><br><span class="line"></span><br><span class="line">Method setterMethod &#x3D; class_getInstanceMethod(self.class, NSSelectorFromString(setterStr));</span><br><span class="line"></span><br><span class="line">NSString *oldClassName &#x3D; NSStringFromClass(self.class);</span><br><span class="line">NSString *kvoClassName &#x3D; [@&quot;FOFKVO_&quot; stringByAppendingString:oldClassName];</span><br><span class="line">Class kvoClass;</span><br><span class="line">kvoClass &#x3D; objc_lookUpClass(kvoClassName.UTF8String);</span><br><span class="line">if (!kvoClass) &#123;</span><br><span class="line">    kvoClass &#x3D; objc_allocateClassPair(self.class, kvoClassName.UTF8String, 0);</span><br><span class="line">    objc_registerClassPair(kvoClass);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">if (setterMethod) &#123;&#x2F;&#x2F;直接调用setXX方法改变值</span><br><span class="line">    class_addMethod(kvoClass,NSSelectorFromString(setterStr), (IMP)setterIMP, &quot;v@:@&quot;);&#x2F;&#x2F;重写setXX方法</span><br><span class="line">&#125;else&#123;&#x2F;&#x2F;通过kvc改变值,通过method-swizzling</span><br><span class="line">    Method method1 &#x3D; class_getInstanceMethod(self.class, @selector(setValue:forKey:));</span><br><span class="line">    Method method2 &#x3D; class_getInstanceMethod(self.class, @selector(swizz_setValue:forKey:));</span><br><span class="line">    method_exchangeImplementations(method1, method2);</span><br><span class="line">&#125;</span><br><span class="line">object_setClass(self, kvoClass);&#x2F;&#x2F;isa-swizzling实例的isa已经指向我们新创建的</span><br><span class="line">FOFObserverInfo *info &#x3D; [[FOFObserverInfo alloc] initWithObserver:observer.description key:key block:block];</span><br><span class="line">NSMutableArray *observers &#x3D; objc_getAssociatedObject(self, kObservers);</span><br><span class="line">if (!observers) &#123;</span><br><span class="line">    observers &#x3D; [NSMutableArray array];</span><br><span class="line">    objc_setAssociatedObject(self, kObservers, observers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);</span><br><span class="line">&#125;</span><br><span class="line">[observers addObject:info];</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">#pragma mark - Private</span><br><span class="line">#pragma mark swizz</span><br><span class="line">-(void)swizz_setValue:(id)value forKey:(NSString *)key&#123;</span><br><span class="line">    id oldValue &#x3D; [self valueForKey:key];</span><br><span class="line">    [self swizz_setValue:value forKey:key];&#x2F;&#x2F;如果这里没报错，说明正常设置值，现在开始回调</span><br><span class="line">    NSMutableArray *observers &#x3D; objc_getAssociatedObject(self, kObservers);</span><br><span class="line">    for (FOFObserverInfo *temp in observers) &#123;</span><br><span class="line">        if ([temp.key isEqualToString:key]) &#123;</span><br><span class="line">            temp.block(self, key, oldValue, value);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">#pragma mark overrid</span><br><span class="line">void setterIMP(id self,SEL _cmd,id newValue)&#123;</span><br><span class="line">    NSString *setterName &#x3D; NSStringFromSelector(_cmd);</span><br><span class="line">    NSString *temp &#x3D; private_upperTolower([setterName substringFromIndex:@&quot;set&quot;.length], 0);&#x2F;&#x2F;去除set并将大写改成小写</span><br><span class="line">    NSString *key &#x3D; [temp substringToIndex:temp.length-1];&#x2F;&#x2F;去除冒号</span><br><span class="line">    id oldValue &#x3D; [self valueForKey:key];</span><br><span class="line">    struct objc_super superClazz &#x3D; &#123;</span><br><span class="line">        .receiver &#x3D; self,</span><br><span class="line">        .super_class &#x3D; class_getSuperclass(object_getClass(self))</span><br><span class="line">    &#125;;</span><br><span class="line">    ((void (*)(void *, SEL, id))objc_msgSendSuper)(&amp;superClazz, _cmd, newValue);</span><br><span class="line">    NSMutableArray *observers &#x3D; objc_getAssociatedObject(self, kObservers);</span><br><span class="line">    for (FOFObserverInfo *temp in observers) &#123;</span><br><span class="line">        if ([temp.key isEqualToString:key]) &#123;</span><br><span class="line">            temp.block(self, key, oldValue, newValue);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">#pragma mark inline</span><br><span class="line">static force_inline NSString * private_setterForKey(NSString *key)&#123;</span><br><span class="line">    key &#x3D; private_lowerToUpper(key, 0);</span><br><span class="line">    return [NSString stringWithFormat:@&quot;set%@:&quot;,key];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">static force_inline NSString * private_lowerToUpper(NSString *str,NSInteger location)&#123;</span><br><span class="line">    NSRange range &#x3D; NSMakeRange(location, 1);</span><br><span class="line">    NSString *lowerLetter &#x3D; [str substringWithRange:range];</span><br><span class="line">    return [str stringByReplacingCharactersInRange:range withString:lowerLetter.uppercaseString];</span><br><span class="line">&#125;</span><br><span class="line">static force_inline NSString * private_upperTolower(NSString *str,NSInteger location)&#123;</span><br><span class="line">    NSRange range &#x3D; NSMakeRange(location, 1);</span><br><span class="line">    NSString *lowerLetter &#x3D; [str substringWithRange:range];</span><br><span class="line">    return [str stringByReplacingCharactersInRange:range withString:lowerLetter.lowercaseString];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见面试题"><a href="#常见面试题" class="headerlink" title="常见面试题"></a>常见面试题</h3><ul>
+<li>KVO是怎么实现的？</li>
+<li>如何手动通知？</li>
+<li>如何自己实现一个通知？</li>
+<li>KVC是怎么实现的？</li>
+<li>KVO的底层原理，若是对实例变量添加KVO支持的话需要注意哪些？</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/06/07/KVC%E5%92%8CKVO/" data-id="ck8h0sl8m00007sqfarbn2o91" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2020/04/01/hello-world/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Hello World
+        
+      </div>
+    </a>
+  
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2020/04/01/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2019/06/07/KVC%E5%92%8CKVO/">KVC和KVO</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2020 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
